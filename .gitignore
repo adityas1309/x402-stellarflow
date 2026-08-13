@@ -1,0 +1,77 @@
+# ─── Secrets ────────────────────────────────────────────
+# NEVER commit env files. Use .env.example as template.
+.env
+.env.local
+.env.*.local
+.agent-testnet.json
+backend/.env
+frontend/.env
+agent/.env
+*.pem
+*.key
+
+# ─── Go services (backend + agent) ──────────────────────
+# Compiled binaries
+backend/api
+backend/main
+backend/bin/
+agent/bin/
+agent/agent
+*.exe
+*.test
+*.out
+
+# User-uploaded content
+backend/uploads/
+
+# go.work.sum is a local cache; go.work itself is committed
+# so the monorepo workspace is shared across machines.
+go.work.sum
+
+# ─── Frontend (Node) ────────────────────────────────────
+node_modules/
+dist/
+build/
+.vite/
+*.tsbuildinfo
+
+# ─── Python ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+venv/
+.venv/
+
+# ─── Rust / Soroban contracts ───────────────────────────
+target/
+Cargo.lock.orig
+**/test_snapshots/
+
+# ─── Logs ───────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ─── OS ─────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── IDE ────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ─── Database dumps (may contain real data) ─────────────
+backend/internal/db/full_dump.sql
+
+# ─── Claude Code local state ────────────────────────────
+.claude/
+
+.vercel
+.npm-cache/

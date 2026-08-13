@@ -1,0 +1,21 @@
+{
+  "name": "stellarflow-web-mvp",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "test:frontend": "node --test tests/frontend.test.mjs",
+    "test:api": "node --test tests/api.test.mjs",
+    "build:mcp": "npm --prefix mcp-server run build",
+    "build:middleware": "npm --prefix middleware/node run build"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "^13.0.0",
+    "@stellarflow/x402-middleware": "file:middleware/node",
+    "express": "^4.19.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

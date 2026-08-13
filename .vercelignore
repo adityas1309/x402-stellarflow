@@ -1,0 +1,9 @@
+node_modules
+**/node_modules
+mcp-server/dist
+target
+**/target
+.npm-cache
+**/__pycache__
+.agent-testnet.json
+*.log
