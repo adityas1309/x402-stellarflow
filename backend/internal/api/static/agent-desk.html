@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>StellarFlow · Agent Desk</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg:        #0b0e14;
+      --panel:     #11151c;
+      --border:    #1c2230;
+      --text:      #e5e9f0;
+      --muted:     #6b7280;
+      --accent:    #7dd3fc;
+      --good:      #34d399;
+      --warn:      #fbbf24;
+      --bad:       #f87171;
+      --mono:      ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, "SF Pro Text", system-ui, sans-serif;
+      font-size: 14px; line-height: 1.5;
+      min-height: 100vh;
+    }
+    header {
+      padding: 20px 32px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+    header h1 .sub { color: var(--muted); font-weight: 400; margin-left: 8px; }
+    .pill { font-size: 11px; padding: 3px 8px; border-radius: 999px; background: var(--panel); border: 1px solid var(--border); color: var(--muted); }
+    .pill.live { color: var(--good); }
+    .pill.live::before { content: "● "; }
+    .pill.testnet { color: var(--warn); border-color: #3b2f0c; background: #1a160a; }
+
+    main { padding: 24px 32px; max-width: 1280px; margin: 0 auto; }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    .card {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 18px;
+    }
+    .card .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .card .value { font-size: 26px; font-weight: 600; margin-top: 6px; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+    .card .value.usdc::after { content: " USDC"; color: var(--muted); font-size: 13px; font-weight: 400; margin-left: 4px; }
+
+    .feed-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .feed-header h2 { margin: 0; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+
+    .feed { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .feed .empty { padding: 40px 24px; color: var(--muted); text-align: center; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 90px 1fr 130px 90px 90px;
+      gap: 12px; padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono); font-size: 12px;
+      align-items: baseline;
+    }
+    .row:last-child { border-bottom: none; }
+    .row.new { animation: flash 1.4s ease-out; }
+    @keyframes flash { from { background: rgba(125, 211, 252, 0.18); } to { background: transparent; } }
+
+    .row .ts { color: var(--muted); font-variant-numeric: tabular-nums; }
+    .row .endpoint { color: var(--accent); }
+    .row .payer { color: var(--text); }
+    .row .price { text-align: right; color: var(--good); font-variant-numeric: tabular-nums; }
+    .row .price::after { content: " USDC"; color: var(--muted); font-size: 11px; }
+    .row .duration { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .row .reasoning { grid-column: 2 / 6; color: var(--muted); padding-left: 0; font-size: 11px; padding-top: 4px; font-style: italic; }
+
+    footer { padding: 24px 32px; color: var(--muted); font-size: 11px; text-align: center; border-top: 1px solid var(--border); margin-top: 40px; }
+    code { font-family: var(--mono); color: var(--accent); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>StellarFlow <span class="sub">Agent Desk</span></h1>
+    <div>
+      <span class="pill live" id="status-live">live</span>
+      <span class="pill" id="status-network">stellar:testnet</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="stats">
+      <div class="card">
+        <div class="label">Revenue (24h)</div>
+        <div class="value usdc" id="stat-revenue">0.0000</div>
+      </div>
+      <div class="card">
+        <div class="label">Calls (24h)</div>
+        <div class="value" id="stat-calls">0</div>
+      </div>
+      <div class="card">
+        <div class="label">Unique Agents</div>
+        <div class="value" id="stat-agents">0</div>
+      </div>
+      <div class="card">
+        <div class="label">Top Endpoint</div>
+        <div class="value" id="stat-top" style="font-size: 16px;">—</div>
+      </div>
+    </section>
+
+    <div class="feed-header">
+      <h2>Live Agent Calls</h2>
+      <span class="pill" id="status-count">0 connected</span>
+    </div>
+    <div class="feed" id="feed">
+      <div class="empty">Waiting for agent activity… run a paid call against <code>/api/x402/posting_heatmap</code> to see it appear here.</div>
+    </div>
+  </main>
+
+  <footer>
+    StellarFlow for Agents · Stellar Hacks Agents 2026 · Open this in any browser, then make a paid call to see live updates.
+  </footer>
+
+  <script>
+    const apiBase = window.location.origin;
+    const feedEl = document.getElementById("feed");
+    const countEl = document.getElementById("status-count");
+    const networkEl = document.getElementById("status-network");
+    const liveEl = document.getElementById("status-live");
+
+    function shortAddr(a) {
+      if (!a) return "—";
+      if (a.length < 12) return a;
+      return a.slice(0, 4) + "…" + a.slice(-4);
+    }
+
+    function fmtTime(iso) {
+      const d = new Date(iso);
+      return d.toLocaleTimeString([], { hour12: false });
+    }
+
+    function fmtDuration(ms) {
+      if (!ms) return "—";
+      return ms + "ms";
+    }
+
+    function renderRow(ev, isNew) {
+      const row = document.createElement("div");
+      row.className = "row" + (isNew ? " new" : "");
+      row.innerHTML = `
+        <div class="ts">${fmtTime(ev.created_at)}</div>
+        <div>
+          <span class="payer">${shortAddr(ev.payer_address)}</span>
+          <span class="endpoint"> → ${ev.endpoint}</span>
+          ${ev.client_id ? `<span style="color: var(--muted); font-size: 11px;"> via ${ev.client_id}</span>` : ""}
+        </div>
+        <div class="endpoint">${ev.facilitator}</div>
+        <div class="price">${ev.price_usdc.toFixed(4)}</div>
+        <div class="duration">${fmtDuration(ev.duration_ms)}</div>
+        ${ev.reasoning ? `<div class="reasoning">"${ev.reasoning}"</div>` : ""}
+      `;
+      return row;
+    }
+
+    function prependRow(ev) {
+      // remove the empty placeholder if present
+      const empty = feedEl.querySelector(".empty");
+      if (empty) empty.remove();
+
+      const row = renderRow(ev, true);
+      feedEl.insertBefore(row, feedEl.firstChild);
+
+      // cap at 50 rows visible
+      while (feedEl.children.length > 50) {
+        feedEl.removeChild(feedEl.lastChild);
+      }
+    }
+
+    async function loadInitial() {
+      try {
+        const [recent, revenue, top] = await Promise.all([
+          fetch(apiBase + "/api/operator/recent?limit=20").then(r => r.json()),
+          fetch(apiBase + "/api/operator/revenue").then(r => r.json()),
+          fetch(apiBase + "/api/operator/top").then(r => r.json()),
+        ]);
+
+        document.getElementById("stat-revenue").textContent = (revenue.total_usdc || 0).toFixed(4);
+        document.getElementById("stat-calls").textContent = revenue.total_calls || 0;
+        document.getElementById("stat-agents").textContent = revenue.unique_agents || 0;
+        document.getElementById("stat-top").textContent = top.top_endpoints?.[0]?.endpoint || "—";
+
+        if (recent.calls && recent.calls.length > 0) {
+          feedEl.innerHTML = "";
+          recent.calls.forEach(ev => feedEl.appendChild(renderRow(ev, false)));
+        }
+      } catch (e) {
+        console.error("initial load failed", e);
+      }
+    }
+
+    function connectSSE() {
+      const es = new EventSource(apiBase + "/api/operator/feed");
+
+      es.addEventListener("hello", e => {
+        const msg = JSON.parse(e.data);
+        countEl.textContent = msg.subscriber_count + " connected";
+        liveEl.textContent = "live";
+      });
+
+      es.addEventListener("agent_call", e => {
+        const ev = JSON.parse(e.data);
+        prependRow(ev);
+        // refresh stats — cheap call, fine for hackathon
+        loadInitial();
+      });
+
+      es.onerror = () => {
+        liveEl.textContent = "reconnecting…";
+        // EventSource auto-reconnects
+      };
+    }
+
+    loadInitial();
+    connectSSE();
+  </script>
+</body>
+</html>

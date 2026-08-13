@@ -1,0 +1,30 @@
+# endpoints.example.yaml — x402-sidecar endpoint configuration.
+#
+# Each entry defines a paid endpoint that the sidecar gates behind an x402
+# paywall. When an agent pays the required USDC amount, the sidecar proxies
+# the request to your real backend (X402_PROXY_TARGET).
+#
+# Your backend receives the original HTTP request with:
+#   - X-Payment header stripped (the sidecar already verified + settled it)
+#   - X-Payer-Address header added (the Stellar G-address that paid)
+#
+# Prices are in USDC. The sidecar converts them to integer stroops internally.
+
+endpoints:
+  # Example: a summarization endpoint
+  - path: /api/summarize
+    method: POST
+    price_usdc: 0.05
+    description: "Summarize a document. Input: {text, max_length}. Returns {summary}."
+
+  # Example: an embedding endpoint
+  - path: /api/embed
+    method: POST
+    price_usdc: 0.02
+    description: "Generate vector embeddings for a text chunk."
+
+  # Example: a batch geocoding endpoint
+  - path: /api/geocode
+    method: POST
+    price_usdc: 0.10
+    description: "Batch geocode up to 50 addresses. Returns {results: [{lat, lng, ...}]}."
