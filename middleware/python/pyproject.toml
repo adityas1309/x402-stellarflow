@@ -1,0 +1,24 @@
+﻿[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "x402-middleware"
+version = "0.1.0"
+description = "FastAPI/Starlette decorator that adds x402 USDC paywalls to any endpoint on Stellar."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+keywords = ["x402", "stellar", "usdc", "micropayments", "middleware", "fastapi", "agent"]
+dependencies = [
+    "httpx>=0.25.0",
+    "starlette>=0.27.0",
+    "stellar-sdk>=10.0.0",
+    "pyjwt>=2.8.0",
+]
+
+[project.optional-dependencies]
+fastapi = ["fastapi>=0.100.0"]
+
+[project.scripts]
+x402-init = "x402_middleware.cli:main"
