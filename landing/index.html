@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="StellarFlow turns APIs into pay-per-call services for AI agents using x402 and USDC on Stellar testnet.">
+  <title>StellarFlow | APIs that charge agents</title>
+  <style>
+    :root {
+      --ink: #11151c;
+      --muted: #68717e;
+      --paper: #f5f2e9;
+      --card: #fffdf8;
+      --line: #d9d5ca;
+      --orange: #f06435;
+      --orange-dark: #b9411e;
+      --blue: #1d69d5;
+      --green: #14865d;
+      --shadow: 0 18px 55px rgba(17, 21, 28, .10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font: 16px/1.6 Georgia, serif; }
+    a { color: inherit; }
+    code, pre, .mono { font-family: "SFMono-Regular", Consolas, monospace; }
+    .shell { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar { border-bottom: 1px solid var(--line); background: rgba(245,242,233,.92); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(14px); }
+    .nav { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 800 18px/1 Arial, sans-serif; letter-spacing: -.04em; }
+    .brand-mark { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 9px; color: #fff; background: var(--orange); transform: rotate(-8deg); }
+    .nav-links { display: flex; gap: 22px; align-items: center; font: 600 12px/1 Arial, sans-serif; }
+    .nav-links a { text-decoration: none; color: var(--muted); }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta { padding: 10px 14px; border-radius: 7px; color: #fff !important; background: var(--ink); }
+    .hero { padding: 88px 0 76px; display: grid; grid-template-columns: 1.1fr .9fr; gap: 70px; align-items: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--orange-dark); font: 800 11px/1 Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+    .eyebrow:before { content: ""; width: 28px; height: 2px; background: var(--orange); }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 650px; margin: 20px 0; font: 800 clamp(52px, 7vw, 92px)/.93 Arial, sans-serif; letter-spacing: -.085em; }
+    h1 em { color: var(--orange); font-style: normal; }
+    .hero-copy { max-width: 560px; color: var(--muted); font-size: 20px; line-height: 1.45; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 18px; border: 1px solid var(--ink); border-radius: 7px; font: 800 12px/1 Arial, sans-serif; text-decoration: none; cursor: pointer; }
+    .btn-primary { color: #fff; background: var(--ink); }
+    .btn-primary:hover { background: #2a303a; }
+    .btn-quiet { border-color: var(--line); background: transparent; }
+    .btn-orange { color: #fff; border-color: var(--orange); background: var(--orange); }
+    .hero-note { margin-top: 18px; color: var(--muted); font: 11px/1.5 Arial, sans-serif; }
+    .receipt { position: relative; padding: 28px; border: 1px solid var(--ink); border-radius: 18px; background: var(--ink); color: #fff; box-shadow: 16px 18px 0 var(--orange); transform: rotate(2deg); }
+    .receipt:after { content: "LIVE TESTNET"; position: absolute; top: 18px; right: 18px; color: #ffc8b8; font: 800 10px Arial, sans-serif; letter-spacing: .12em; }
+    .receipt h2 { margin: 44px 0 24px; font: 800 30px/.98 Arial, sans-serif; letter-spacing: -.06em; }
+    .receipt-row { display: flex; justify-content: space-between; gap: 15px; padding: 14px 0; border-top: 1px solid #343b47; font: 12px Arial, sans-serif; }
+    .receipt-row span:first-child { color: #aab2bf; }
+    .receipt-row span:last-child { text-align: right; color: #fff; }
+    .receipt-total { margin-top: 16px; padding: 16px; border-radius: 9px; background: #252c36; color: #ffc1ad; font: 800 18px Arial, sans-serif; }
+    .proof-strip { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+    .proof-stat { padding: 24px 18px; border-right: 1px solid var(--line); }
+    .proof-stat:last-child { border-right: 0; }
+    .proof-stat strong { display: block; margin-bottom: 5px; font: 800 25px/1 Arial, sans-serif; letter-spacing: -.06em; }
+    .proof-stat span { color: var(--muted); font: 11px Arial, sans-serif; text-transform: uppercase; letter-spacing: .08em; }
+    section { padding: 100px 0; border-bottom: 1px solid var(--line); }
+    .section-head { display: flex; justify-content: space-between; gap: 35px; align-items: end; margin-bottom: 42px; }
+    .section-kicker { color: var(--orange-dark); font: 800 11px Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+    h2 { margin-bottom: 0; font: 800 clamp(34px, 5vw, 58px)/.98 Arial, sans-serif; letter-spacing: -.075em; }
+    .section-intro { max-width: 440px; margin-bottom: 3px; color: var(--muted); font-size: 17px; }
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .step { min-height: 250px; padding: 22px; border: 1px solid var(--line); background: var(--card); }
+    .step-no { display: block; margin-bottom: 65px; color: var(--orange); font: 800 13px Arial, sans-serif; }
+    .step h3 { margin-bottom: 9px; font: 800 21px/1 Arial, sans-serif; letter-spacing: -.04em; }
+    .step p { margin-bottom: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+    .step strong { color: var(--ink); }
+    .live-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 18px; align-items: start; }
+    .panel { padding: 25px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+    .panel h3 { margin-bottom: 8px; font: 800 22px/1 Arial, sans-serif; letter-spacing: -.05em; }
+    .panel p { color: var(--muted); font-size: 14px; }
+    .check-list { display: grid; gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; font: 600 13px Arial, sans-serif; }
+    .check-list li:before { content: "✓"; display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 8px; border-radius: 50%; color: #fff; background: var(--green); font-size: 11px; }
+    .terminal { min-height: 230px; padding: 20px; overflow: auto; border-radius: 10px; color: #d8e2f0; background: #151b24; font: 12px/1.7 Consolas, monospace; white-space: pre-wrap; }
+    .terminal .dim { color: #7d8999; }
+    .terminal .ok { color: #6ee7b7; }
+    .terminal .price { color: #ffc18f; }
+    .wallet-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; align-items: center; }
+    .wallet-status { color: var(--muted); font: 11px Arial, sans-serif; }
+    .wallet-status strong { color: var(--ink); }
+    .architecture { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .arch-card { min-height: 205px; padding: 24px; background: var(--ink); color: #fff; }
+    .arch-card:nth-child(2) { background: var(--orange); }
+    .arch-card:nth-child(3) { background: var(--blue); }
+    .arch-card .tag { margin-bottom: 55px; color: rgba(255,255,255,.7); font: 800 10px Arial, sans-serif; letter-spacing: .13em; text-transform: uppercase; }
+    .arch-card h3 { margin-bottom: 8px; font: 800 23px/1 Arial, sans-serif; letter-spacing: -.05em; }
+    .arch-card p { margin-bottom: 0; color: rgba(255,255,255,.78); font-size: 14px; line-height: 1.4; }
+    .proof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .proof-card { padding: 24px; border: 1px solid var(--line); background: var(--card); }
+    .proof-card .label { color: var(--muted); font: 800 10px Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+    .proof-card .value { display: block; margin: 13px 0 16px; color: var(--blue); font: 800 15px/1.35 Consolas, monospace; word-break: break-all; }
+    .proof-card a { color: var(--orange-dark); font: 800 12px Arial, sans-serif; text-decoration: none; }
+    .network-note { display: grid; gap: 9px; margin-top: 18px; padding: 20px; border: 1px solid var(--line); background: #ebe7dc; }
+    .network-note strong { font: 800 15px Arial, sans-serif; }
+    .network-note span { color: var(--muted); font-size: 14px; }
+    .network-note code { color: var(--ink); font-size: 11px; overflow-wrap: anywhere; }
+    .command { margin-top: 22px; padding: 18px; overflow: auto; color: #d8e2f0; background: #151b24; font: 12px/1.7 Consolas, monospace; white-space: pre-wrap; }
+    .faq { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    details { padding: 20px; border-top: 1px solid var(--line); }
+    summary { cursor: pointer; font: 800 16px Arial, sans-serif; }
+    details p { margin: 12px 0 0; color: var(--muted); font-size: 14px; }
+    footer { padding: 35px 0 55px; color: var(--muted); font: 12px Arial, sans-serif; }
+    footer a { color: var(--ink); font-weight: 700; text-decoration: none; }
+    @media (max-width: 800px) {
+      .shell { width: min(100% - 28px, 600px); }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .hero, .live-grid { grid-template-columns: 1fr; gap: 38px; }
+      .hero { padding: 58px 0 62px; }
+      .receipt { transform: none; box-shadow: 9px 10px 0 var(--orange); }
+      .proof-strip, .steps, .architecture, .proof-grid, .faq { grid-template-columns: 1fr 1fr; }
+      .proof-stat:nth-child(2) { border-right: 0; }
+      .proof-stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    }
+    @media (max-width: 520px) {
+      h1 { font-size: 52px; }
+      section { padding: 70px 0; }
+      .section-head { display: block; }
+      .section-intro { margin-top: 18px; }
+      .proof-strip, .steps, .architecture, .proof-grid, .faq { grid-template-columns: 1fr; }
+      .proof-stat { border-right: 0; border-bottom: 1px solid var(--line); }
+      .proof-stat:last-child { border-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell nav">
+      <a class="brand" href="#top"><span class="brand-mark">S</span> stellarflow</a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#how">How it works</a><a href="#agents">For agents</a><a href="#proof">Status</a><a class="nav-cta" href="#live">Try it</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="shell hero">
+      <div>
+        <span class="eyebrow">Agent payments, made inspectable</span>
+        <h1>APIs that <em>charge</em> agents.</h1>
+        <p class="hero-copy">Turn any API into a pay-per-call product for AI agents. StellarFlow handles discovery, payment requests, USDC settlement, and access control so your endpoint gets paid before it returns data.</p>
+        <div class="actions"><a class="btn btn-primary" href="#live">Try the live API</a><a class="btn btn-quiet" href="#how">See how it works</a></div>
+        <p class="hero-note">Live service on Stellar testnet. No subscription, dashboard, or API key required for the agent.</p>
+      </div>
+      <aside class="receipt" aria-label="Live payment receipt preview">
+        <div class="mono" style="color:#ff9f7d;font-size:11px;">PAYMENT_REQUIRED / 402</div>
+        <h2>One request.<br>One settlement.</h2>
+        <div class="receipt-row"><span>resource</span><span>/api/x402/sentiment</span></div>
+        <div class="receipt-row"><span>asset</span><span>USDC / Stellar testnet</span></div>
+        <div class="receipt-row"><span>protocol</span><span>x402 exact-v2</span></div>
+        <div class="receipt-total">0.05 USDC / call</div>
+      </aside>
+    </div>
+
+    <div class="shell proof-strip" aria-label="Project facts">
+      <div class="proof-stat"><strong>0.05</strong><span>USDC per request</span></div>
+      <div class="proof-stat"><strong>402</strong><span>Automatic payment gate</span></div>
+      <div class="proof-stat"><strong>24/7</strong><span>Hosted API availability</span></div>
+      <div class="proof-stat"><strong>MCP</strong><span>Built for agent tools</span></div>
+    </div>
+
+    <section id="how"><div class="shell">
+      <div class="section-head"><div><span class="section-kicker">01 / The product</span><h2>Let the request pay for itself.</h2></div><p class="section-intro">API teams get a simple monetization layer. Agents get instant access to tools without managing human-style billing.</p></div>
+      <div class="steps">
+        <article class="step"><span class="step-no">01 / DISCOVER</span><h3>Find the offer</h3><p>The agent sees what the API does, what it costs, and which payment network it accepts.</p></article>
+        <article class="step"><span class="step-no">02 / CHALLENGE</span><h3>Receive 402</h3><p>Agent calls the API without payment. Server returns <strong>HTTP 402</strong> with machine-readable requirements.</p></article>
+        <article class="step"><span class="step-no">03 / AUTHORIZE</span><h3>Approve payment</h3><p>The agent wallet approves the exact price. No account creation, invoice, or long-lived API key is needed.</p></article>
+        <article class="step"><span class="step-no">04 / DELIVER</span><h3>Get the data</h3><p>Facilitator settles on Stellar testnet. Middleware confirms payment and releases the JSON response.</p></article>
+      </div>
+    </div></section>
+
+    <section id="live"><div class="shell">
+      <div class="section-head"><div><span class="section-kicker">02 / Live product</span><h2>Use the service now.</h2></div><p class="section-intro">The live API is online. Inspect the offer, connect a testnet wallet, and authorize a real paid request.</p></div>
+      <div class="live-grid">
+        <div class="panel"><h3>Public signal API</h3><p>A live hosted endpoint protected by x402. It fetches current public stories for your topic, scores the language transparently, and releases the analysis only after payment.</p><ul class="check-list"><li>Live public source</li><li>Pricing is machine-readable</li><li>Payment gate is enforced</li><li>Settlement runs on testnet</li></ul><div class="actions"><button class="btn btn-quiet" onclick="runCatalog()">View service</button><button class="btn btn-quiet" onclick="run402()">View payment requirement</button></div><div class="wallet-row"><button class="btn btn-orange" id="connect-wallet" onclick="connectWallet()">Connect a Stellar wallet</button><button class="btn btn-primary" id="pay-api" onclick="payForApi()" disabled>Pay 0.05 USDC and run</button><button class="btn btn-quiet" id="add-trustline" onclick="addUsdcTrustline()" hidden>Add USDC trustline</button><span class="wallet-status" id="wallet-status">Wallet selection supports Freighter, xBull, Albedo, WalletConnect, and more.</span></div></div>
+        <pre class="terminal" id="output"><span class="dim">Ready. Choose a check.</span>
+
+<span class="dim">No payment is made by these buttons.</span></pre>
+      </div>
+    </div></section>
+
+    <section id="agents"><div class="shell">
+      <div class="section-head"><div><span class="section-kicker">03 / Agent workflow</span><h2>The real product runs in the agent loop.</h2></div><p class="section-intro">The web checkout is optional. The primary integration is an MCP server that lets Claude, Cursor, Codex, or another MCP client discover a paid tool and authorize each call from a testnet agent wallet.</p></div>
+      <div class="steps">
+        <article class="step"><span class="step-no">01 / INSTALL</span><h3>Run the MCP server</h3><p>Install and build the terminal package. It speaks MCP over stdio, so your AI client can launch it as a local tool server.</p></article>
+        <article class="step"><span class="step-no">02 / CONNECT</span><h3>Provision the agent wallet</h3><p><code>npx x402-mcp init</code> creates the testnet payer wallet and stores its local signing configuration.</p></article>
+        <article class="step"><span class="step-no">03 / CALL</span><h3>Ask the agent for data</h3><p>The model calls a paid MCP tool. The server requests the API, receives HTTP 402, and reads the exact USDC requirement.</p></article>
+        <article class="step"><span class="step-no">04 / SETTLE</span><h3>Pay, retry, return</h3><p>The agent signs the payment, retries with <code>X-Payment</code>, the facilitator settles on Stellar testnet, and the tool returns the result.</p></article>
+      </div>
+      <pre class="command">cd mcp-server
+npm install
+npm run build
+$env:STELLARFLOW_BASE_URL="https://x402-mcp-stellar-template-main.vercel.app"
+$env:STELLARFLOW_NETWORK="stellar:testnet"
+$env:STELLARFLOW_DRY_RUN="false"
+npx x402-mcp init
+node dist/cli.js run</pre>
+      <div class="network-note"><strong>Who uses this?</strong><span>API owners add the middleware. AI agent builders register the MCP server. The agent pays per tool call instead of using a subscription or API key. The browser button below is a human-readable way to verify the same payment rail.</span></div>
+    </div></section>
+
+    <section><div class="shell">
+      <div class="section-head"><div><span class="section-kicker">04 / Architecture</span><h2>Three roles. One clean loop.</h2></div><p class="section-intro">Each component has one job, so value moves cleanly from agent request to verified API response.</p></div>
+      <div class="architecture">
+        <article class="arch-card"><div class="tag">API owner</div><h3>Your endpoint</h3><p>x402 middleware protects a normal HTTP route. The business handler runs only after payment verification.</p></article>
+        <article class="arch-card"><div class="tag">Agent runtime</div><h3>MCP wallet</h3><p>The agent discovers tools, reads the 402 challenge, signs the exact USDC payment, and retries automatically.</p></article>
+        <article class="arch-card"><div class="tag">Settlement layer</div><h3>Stellar testnet</h3><p>Soroban USDC transfer plus a managed facilitator gives fast, sponsored-fee settlement and an auditable receipt.</p></article>
+      </div>
+    </div></section>
+
+    <section id="proof"><div class="shell">
+      <div class="section-head"><div><span class="section-kicker">05 / Service status</span><h2>Built for trust, not mystery.</h2></div><p class="section-intro">The product keeps infrastructure details out of the customer experience while still making the important guarantees visible.</p></div>
+      <div class="proof-grid">
+        <article class="proof-card"><span class="label">API availability</span><span class="value">ONLINE</span><p>Hosted endpoint is reachable from the public web and ready for agent requests.</p></article>
+        <article class="proof-card"><span class="label">Payment network</span><span class="value">STELLAR TESTNET</span><p>Every payment uses testnet USDC. No production funds are involved.</p></article>
+        <article class="proof-card"><span class="label">Access control</span><span class="value">402 ENFORCED</span><p>The business response is held until the payment requirement is satisfied.</p></article>
+        <article class="proof-card"><span class="label">Settlement evidence</span><span class="value">VERIFIABLE</span><p>Completed payments can be checked in the public Stellar testnet explorer.</p><a href="https://stellar.expert/explorer/testnet" target="_blank">Open testnet explorer</a></article>
+      </div>
+      <div class="network-note"><strong>Testnet configuration</strong><span>Payments settle to the configured treasury. The spending-limit contract is deployed on testnet and provides an auditable safety-rail path for agent budgets and runner verification.</span><code>Treasury: GBLDFWELHTPY4SIW6BNHDPFAYLH3NR5N2HK5VTK5GPAUMK5OESE4SYR7</code><code>Spending limits: CBRE5KJZRMX6VOPPO6PZOVLMAKIFPB6SERENFHDHULRKG5NGVQ6ZTZ4F</code></div>
+    </div></section>
+
+    <section><div class="shell">
+      <div class="section-head"><div><span class="section-kicker">06 / Product questions</span><h2>Clear by design.</h2></div></div>
+      <div class="faq"><details open><summary>Is this a real service?</summary><p>Yes. The endpoint fetches current public stories, returns a transparent lexicon-based signal, and charges 0.05 USDC before releasing the response. The payment settles on Stellar testnet; no production funds are involved.</p></details><details><summary>Which wallets can connect?</summary><p>Stellar Wallets Kit opens a wallet selector for Freighter, xBull, Albedo, WalletConnect, Lobstr, Rabet, Hana, and other supported Stellar wallets. The selected wallet signs both the trustline transaction and x402 authorization.</p></details><details><summary>Does the browser button make a payment?</summary><p>Yes. After connecting a Stellar testnet wallet, the payment button asks it to approve exactly 0.05 USDC, retries the protected API request when testnet timing requires a fresh authorization, and links to confirmed activity.</p></details><details><summary>What does x402 add?</summary><p>x402 turns HTTP 402 into machine-readable payment requirements. Agents can discover the price, sign a payment, retry the request, and receive live public-signal data without a dashboard or API key.</p></details><details><summary>Why testnet?</summary><p>Testnet gives the same Stellar and Soroban mechanics without real financial risk. The live product is intentionally configured for testnet.</p></details></div>
+    </div></section>
+  </main>
+
+  <footer><div class="shell"><strong>stellarflow</strong> / x402 + MCP + USDC on Stellar testnet. <a href="https://x402-mcp-stellar-template-main.vercel.app/api/catalog" target="_blank">Open live catalog</a></div></footer>
+  <script type="module">
+    const DEBUG = true;
+    const debug = (event, details = {}) => {
+      if (DEBUG) console.info('[stellarflow]', new Date().toISOString(), event, details);
+    };
+    window.addEventListener('error', event => debug('window_error', { message: event.message, source: event.filename, line: event.lineno }));
+    window.addEventListener('unhandledrejection', event => debug('unhandled_rejection', { reason: String(event.reason) }));
+    const output = document.getElementById('output');
+    const API = '';
+    const TREASURY = 'GBLDFWELHTPY4SIW6BNHDPFAYLH3NR5N2HK5VTK5GPAUMK5OESE4SYR7';
+    const USDC_ISSUER = 'GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5';
+    const RPC_URL = 'https://soroban-testnet.stellar.org';
+    const HORIZON_URL = 'https://horizon-testnet.stellar.org';
+    let walletKit;
+    let walletAddress = '';
+    let ExactStellarScheme;
+    let stellarSdk;
+
+    function setWalletStatus(text, strong = '') {
+      document.getElementById('wallet-status').innerHTML = strong ? '<strong>' + strong + '</strong> ' + text : text;
+    }
+
+    async function loadWalletSdk() {
+      if (walletKit && ExactStellarScheme) return;
+      debug('sdk_load_start');
+      const kitModule = await import('https://esm.sh/@creit.tech/stellar-wallets-kit@2.5.0/sdk?bundle');
+      const modulesModule = await import('https://esm.sh/@creit.tech/stellar-wallets-kit@2.5.0/modules/utils');
+      walletKit = kitModule.StellarWalletsKit;
+      walletKit.init({ modules: modulesModule.defaultModules() });
+      ({ ExactStellarScheme } = await import('https://esm.sh/@x402/stellar@2.9.0/exact/client?bundle'));
+      debug('sdk_load_ok');
+    }
+
+    window.connectWallet = async function connectWallet() {
+      try {
+        await loadWalletSdk();
+        const access = await walletKit.getAddress();
+        if (!access?.address) throw new Error('No Stellar wallet address was returned. Choose a supported wallet and try again.');
+        walletAddress = access.address;
+        debug('wallet_connected', { wallet: walletAddress.slice(0, 6) + '...' + walletAddress.slice(-6) });
+        document.getElementById('pay-api').disabled = false;
+        document.getElementById('add-trustline').hidden = true;
+        document.getElementById('connect-wallet').textContent = 'Wallet connected';
+        setWalletStatus('ready to approve', walletAddress.slice(0, 6) + '...' + walletAddress.slice(-6));
+        show('WALLET', 'Connected on Stellar testnet\n\n' + walletAddress);
+      } catch (e) {
+        setWalletStatus(e.message, 'Wallet not connected.');
+        show('WALLET', e.message, false);
+      }
+    };
+
+    function toBase64(value) {
+      const bytes = new TextEncoder().encode(JSON.stringify(value));
+      let binary = '';
+      bytes.forEach(byte => binary += String.fromCharCode(byte));
+      return btoa(binary);
+    }
+
+    async function checkWalletFunding() {
+      debug('funding_check_start', { wallet: walletAddress.slice(0, 6) + '...' + walletAddress.slice(-6) });
+      const response = await fetch(HORIZON_URL + '/accounts/' + walletAddress);
+      if (!response.ok) {
+        const error = new Error('This Freighter account is not active on Stellar testnet. Activate it before adding a trustline.');
+        error.code = 'ACCOUNT_INACTIVE';
+        throw error;
+      }
+      const account = await response.json();
+      const usdc = account.balances?.find(item => item.asset_code === 'USDC' && item.asset_issuer === USDC_ISSUER);
+      if (!usdc) {
+        const error = new Error('This wallet has no Stellar testnet USDC trustline. Add it below, then receive testnet USDC.');
+        error.code = 'MISSING_TRUSTLINE';
+        throw error;
+      }
+      if (Number(usdc.balance) < 0.05) {
+        throw new Error('This wallet has ' + usdc.balance + ' USDC. At least 0.05 testnet USDC is required for this request.');
+      }
+      debug('funding_check_ok', { usdc: usdc.balance });
+    }
+
+    window.addUsdcTrustline = async function addUsdcTrustline() {
+      const button = document.getElementById('add-trustline');
+      button.disabled = true;
+      try {
+        if (!walletAddress) throw new Error('Connect a Stellar wallet before adding the trustline.');
+        const accountResponse = await fetch(HORIZON_URL + '/accounts/' + walletAddress);
+        if (!accountResponse.ok) throw new Error('Activate this Stellar testnet account first, then try again.');
+        if (!stellarSdk) {
+          const stellarModule = await import('https://esm.sh/@stellar/stellar-sdk@13.3.0?bundle');
+          stellarSdk = stellarModule.default ?? stellarModule;
+        }
+        const server = new stellarSdk.Horizon.Server(HORIZON_URL);
+        const account = await server.loadAccount(walletAddress);
+        const tx = new stellarSdk.TransactionBuilder(account, {
+          fee: stellarSdk.BASE_FEE,
+          networkPassphrase: stellarSdk.Networks.TESTNET,
+        }).addOperation(stellarSdk.Operation.changeTrust({
+          asset: new stellarSdk.Asset('USDC', USDC_ISSUER),
+        })).setTimeout(300).build();
+        setWalletStatus('approve the USDC trustline transaction in your selected wallet', 'Trustline setup.');
+        const signed = await walletKit.signTransaction(tx.toXDR(), {
+          networkPassphrase: stellarSdk.Networks.TESTNET,
+          address: walletAddress,
+        });
+        const signedXdr = signed?.signedTxXdr;
+        if (!signedXdr || typeof signedXdr !== 'string') throw new Error('Selected wallet did not return a signed transaction.');
+        const result = await server.submitTransaction(stellarSdk.TransactionBuilder.fromXDR(signedXdr, stellarSdk.Networks.TESTNET));
+        button.hidden = true;
+        setWalletStatus('USDC trustline added. You can now pay.', 'Ready.');
+        show('TRUSTLINE', 'USDC trustline added on Stellar testnet\n\nTransaction: ' + result.hash + '\n\n<a href="https://stellar.expert/explorer/testnet/tx/' + result.hash + '" target="_blank">View trustline transaction →</a>');
+      } catch (e) {
+        show('TRUSTLINE', e.message, false);
+        setWalletStatus(e.message, 'Trustline not added.');
+        button.disabled = false;
+      }
+    };
+
+    async function findSettlement(startedAt) {
+      const minimumTime = startedAt - 10000;
+      // Horizon can take a few seconds to index the facilitator's transaction.
+      for (let attempt = 0; attempt < 20; attempt += 1) {
+        try {
+          debug('settlement_poll', { attempt: attempt + 1 });
+          const response = await fetch(HORIZON_URL + '/accounts/' + TREASURY + '/transactions?limit=10&order=desc');
+          if (response.ok) {
+            const page = await response.json();
+            const candidates = page._embedded?.records?.filter(tx => tx.successful && Date.parse(tx.created_at) >= minimumTime) ?? [];
+            for (const tx of candidates) {
+              const operations = await fetch(HORIZON_URL + '/transactions/' + tx.hash + '/operations?limit=20');
+              if (!operations.ok) continue;
+              const operationPage = await operations.json();
+              const transfer = operationPage._embedded?.records?.flatMap(operation => operation.asset_balance_changes ?? [])
+                .find(change => change.asset_code === 'USDC' && change.asset_issuer === USDC_ISSUER &&
+                  change.from === walletAddress && change.to === TREASURY && Number(change.amount) >= 0.05);
+              if (transfer) {
+                debug('settlement_confirmed', { hash: tx.hash, amount: transfer.amount });
+                return { ...tx, usdcTransfer: transfer };
+              }
+            }
+          }
+        } catch (_) {
+          debug('settlement_poll_error', { attempt: attempt + 1 });
+          // Explorer indexing can briefly lag settlement; the wallet link remains available.
+        }
+        await new Promise(resolve => setTimeout(resolve, 1500));
+      }
+      return null;
+    }
+
+    window.payForApi = async function payForApi() {
+      const button = document.getElementById('pay-api');
+      button.disabled = true;
+      try {
+        if (!walletAddress) await window.connectWallet();
+        if (!walletAddress) throw new Error('Connect a Stellar wallet before paying.');
+        setWalletStatus('checking testnet USDC balance', 'Wallet connected.');
+        await checkWalletFunding();
+        for (let paymentAttempt = 1; paymentAttempt <= 4; paymentAttempt += 1) {
+        debug('payment_attempt_start', { attempt: paymentAttempt });
+        show('POST /api/x402/sentiment', paymentAttempt === 1 ? 'requesting payment quote...' : 'requesting a fresh payment authorization...');
+        const quoteResponse = await fetch(API + '/api/x402/sentiment', { method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({topic:'stellar blockchain'}) });
+        const paymentRequired = await quoteResponse.json();
+        if (quoteResponse.status !== 402) throw new Error('Expected a 402 payment quote, received HTTP ' + quoteResponse.status);
+        const requirement = paymentRequired.accepts?.find(item => item.scheme === 'exact' && item.network === 'stellar:testnet');
+        if (!requirement) throw new Error('The API did not offer a Stellar testnet payment method.');
+        debug('payment_requirement', { amount: requirement.amount, maxTimeoutSeconds: requirement.maxTimeoutSeconds, payTo: requirement.payTo });
+        show('WALLET', 'Review the exact 0.05 USDC testnet authorization in your selected wallet...');
+        const signer = {
+          address: walletAddress,
+          signAuthEntry: async (entryXdr, options = {}) => {
+            return walletKit.signAuthEntry(entryXdr, { address: walletAddress, networkPassphrase: options.networkPassphrase });
+          }
+        };
+        try {
+        const scheme = new ExactStellarScheme(signer, { url: RPC_URL });
+          const partial = await scheme.createPaymentPayload(2, requirement);
+          debug('authorization_signed', { attempt: paymentAttempt });
+        const paymentPayload = { x402Version: 2, accepted: requirement, payload: partial.payload };
+        const paymentStartedAt = Date.now();
+        const paidResponse = await fetch(API + '/api/x402/sentiment', { method: 'POST', headers: {'content-type':'application/json', 'X-Payment': toBase64(paymentPayload)}, body: JSON.stringify({topic:'stellar blockchain'}) });
+          const result = await paidResponse.json();
+          debug('paid_response', { status: paidResponse.status, error: result.error ?? null });
+        if (!paidResponse.ok) {
+          const paymentError = result.error ?? 'Payment was not accepted (HTTP ' + paidResponse.status + ').';
+          if (paymentAttempt < 4 && /auth_.*(expired|expiration|too_far)|simulation_failed|settle_channel_service_failed/i.test(paymentError)) {
+            show('WALLET', 'This authorization was not accepted by the testnet facilitator. Creating a fresh authorization...');
+            continue;
+          }
+          throw new Error(paymentError);
+        }
+        show('POST /api/x402/sentiment', 'HTTP ' + paidResponse.status + '\n\n' + JSON.stringify(result, null, 2) + '\n\nPayment accepted. Checking Stellar testnet for the settlement...');
+        const settlement = await findSettlement(paymentStartedAt);
+        if (!settlement) throw new Error('Payment was accepted, but the USDC settlement is still not confirmed. Check Stellar Explorer and retry instead of treating this request as complete.');
+        const explorerLink = settlement
+          ? 'Transaction hash: ' + settlement.hash + '\n\n<a href="https://stellar.expert/explorer/testnet/tx/' + settlement.hash + '" target="_blank">View confirmed settlement in Stellar Explorer →</a>'
+          : '<a href="https://stellar.expert/explorer/testnet/account/' + walletAddress + '" target="_blank">Open wallet activity in Stellar Explorer →</a>';
+        show('POST /api/x402/sentiment', 'HTTP ' + paidResponse.status + '\n\n' + JSON.stringify(result, null, 2) + '\n\nPayment accepted and released the API response.\n\n' + (settlement ? 'Verified USDC transfer: ' + settlement.usdcTransfer.amount + ' USDC to the treasury.\n\n' : 'USDC settlement is still indexing on Stellar testnet.\n\n') + explorerLink);
+        setWalletStatus('settled on testnet', 'Success.');
+        break;
+        } catch (error) {
+          const message = error?.message ?? String(error);
+          if (paymentAttempt < 4 && /auth_.*(expired|expiration|too_far)|simulation_failed|settle_channel_service_failed/i.test(message)) {
+            show('WALLET', 'The authorization was rejected or expired. Creating a fresh authorization...');
+            await new Promise(resolve => setTimeout(resolve, 1000 * paymentAttempt));
+            continue;
+          }
+          throw error;
+        }
+        }
+      } catch (e) {
+        if (e.code === 'MISSING_TRUSTLINE') document.getElementById('add-trustline').hidden = false;
+        show('PAYMENT', e.message, false);
+        setWalletStatus(e.message, 'Payment not completed.');
+      } finally {
+        button.disabled = false;
+      }
+    };
+
+    function show(label, body, ok = true) {
+      debug('ui_output', { label, ok, message: String(body).slice(0, 500) });
+      const safe = body.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace(/&lt;a href="([^"]+)" target="_blank"&gt;([^&]+)&lt;\/a&gt;/g, '<a href="$1" target="_blank">$2</a>');
+      output.innerHTML = '<span class="dim">$ ' + label + '</span>\n\n' + (ok ? '<span class="ok">' : '<span class="price">') + safe + '</span>';
+    }
+    window.runCatalog = async function runCatalog() {
+      show('GET /api/catalog', 'requesting...');
+      try { const r = await fetch(API + '/api/catalog'); show('GET /api/catalog', 'HTTP ' + r.status + '\n\n' + JSON.stringify(await r.json(), null, 2)); } catch (e) { show('GET /api/catalog', e.message, false); }
+    }
+    window.run402 = async function run402() {
+      show('POST /api/x402/sentiment', 'requesting without payment...');
+      try { const r = await fetch(API + '/api/x402/sentiment', { method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({topic:'stellar blockchain'}) }); show('POST /api/x402/sentiment', 'HTTP ' + r.status + '\n\n' + JSON.stringify(await r.json(), null, 2)); } catch (e) { show('POST /api/x402/sentiment', e.message, false); }
+    }
+  </script>
+</body>
+</html>
