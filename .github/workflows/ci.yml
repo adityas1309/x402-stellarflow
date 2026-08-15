@@ -26,16 +26,18 @@ jobs:
       - run: npm test
 
   rust:
+    needs: node
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-      - run: cargo test --manifest-path contracts/spending_limits/Cargo.toml
-      - run: cargo test --manifest-path contracts/audit_log/Cargo.toml
+      - run: cargo test --locked --manifest-path contracts/spending_limits/Cargo.toml
+      - run: cargo test --locked --manifest-path contracts/audit_log/Cargo.toml
 
   go:
+    needs: rust
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,6 +49,7 @@ jobs:
         working-directory: backend
 
   python:
+    needs: go
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
