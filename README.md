@@ -1,5 +1,10 @@
 # StellarFlow
 
+[![CI/CD](https://github.com/adityas1309/x402-stellarflow/actions/workflows/ci.yml/badge.svg)](https://github.com/adityas1309/x402-stellarflow/actions/workflows/ci.yml)
+[![Live deployment](https://img.shields.io/badge/live%20deployment-Vercel-black?logo=vercel)](https://x402-mcp-stellar-template-main.vercel.app)
+[![Demo video](https://img.shields.io/badge/demo%20video-YouTube-red?logo=youtube)](https://www.youtube.com/watch?v=UL958Dl2-2c)
+[![Testnet contract](https://img.shields.io/badge/testnet%20contract-Stellar%20Expert-1d69d5)](https://stellar.expert/explorer/testnet/contract/CBRE5KJZRMX6VOPPO6PZOVLMAKIFPB6SERENFHDHULRKG5NGVQ6ZTZ4F)
+
 StellarFlow is a pay-per-call API layer for AI agents. API owners add x402 middleware; agents discover price, receive HTTP 402, sign exact USDC authorization, retry, and receive data only after Stellar testnet settlement.
 
 ## Live Product
