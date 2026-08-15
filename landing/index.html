@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="StellarFlow turns APIs into pay-per-call services for AI agents using x402 and USDC on Stellar testnet.">
   <title>StellarFlow | APIs that charge agents</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "/@stellar/freighter-api@6.0.0/es2022/freighter-api.mjs": "/freighter-api-shim.js",
+        "https://esm.sh/@stellar/freighter-api@6.0.0/es2022/freighter-api.mjs": "/freighter-api-shim.js",
+        "/tweetnacl-util@^0.15.1?target=es2022": "/tweetnacl-util-shim.js",
+        "https://esm.sh/tweetnacl-util@^0.15.1?target=es2022": "/tweetnacl-util-shim.js",
+        "https://esm.sh/tweetnacl-util@^0.15.1": "/tweetnacl-util-shim.js",
+        "https://esm.sh/tweetnacl-util@0.15.1": "/tweetnacl-util-shim.js",
+        "https://esm.sh/tweetnacl-util@^0.15.1/es2022/tweetnacl-util.mjs": "/tweetnacl-util-shim.js",
+        "https://esm.sh/tweetnacl-util@0.15.1/es2022/tweetnacl-util.mjs": "/tweetnacl-util-shim.js",
+        "/tweetnacl@^1.0.3?target=es2022": "/tweetnacl-shim.js",
+        "https://esm.sh/tweetnacl@^1.0.3?target=es2022": "/tweetnacl-shim.js",
+        "https://esm.sh/tweetnacl@^1.0.3": "/tweetnacl-shim.js",
+        "https://esm.sh/tweetnacl@1.0.3": "/tweetnacl-shim.js",
+        "https://esm.sh/tweetnacl@^1.0.3/es2022/tweetnacl.mjs": "/tweetnacl-shim.js",
+        "https://esm.sh/tweetnacl@1.0.3/es2022/tweetnacl.mjs": "/tweetnacl-shim.js"
+      }
+    }
+  </script>
   <style>
     :root {
       --ink: #11151c;
@@ -253,8 +273,8 @@ node dist/cli.js run</pre>
     async function loadWalletSdk() {
       if (walletKit && ExactStellarScheme) return;
       debug('sdk_load_start');
-      const kitModule = await import('https://esm.sh/@creit.tech/stellar-wallets-kit@2.5.0/sdk?bundle');
-      const modulesModule = await import('https://esm.sh/@creit.tech/stellar-wallets-kit@2.5.0/modules/utils');
+      const kitModule = await import('https://esm.sh/@creit.tech/stellar-wallets-kit@2.5.0/sdk?bundle&deps=@stellar/freighter-api@6.0.0');
+      const modulesModule = await import('https://esm.sh/@creit.tech/stellar-wallets-kit@2.5.0/modules/utils?deps=@stellar/freighter-api@6.0.0');
       walletKit = kitModule.StellarWalletsKit;
       walletKit.init({ modules: modulesModule.defaultModules() });
       ({ ExactStellarScheme } = await import('https://esm.sh/@x402/stellar@2.9.0/exact/client?bundle'));
@@ -264,7 +284,7 @@ node dist/cli.js run</pre>
     window.connectWallet = async function connectWallet() {
       try {
         await loadWalletSdk();
-        const access = await walletKit.getAddress();
+        const access = await walletKit.authModal({ showInstallLabel: true });
         if (!access?.address) throw new Error('No Stellar wallet address was returned. Choose a supported wallet and try again.');
         walletAddress = access.address;
         debug('wallet_connected', { wallet: walletAddress.slice(0, 6) + '...' + walletAddress.slice(-6) });

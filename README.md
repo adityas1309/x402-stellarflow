@@ -29,14 +29,27 @@ Testnet assets only. No production funds required.
 
 ## Submission Screenshots
 
+### Product: Desktop Landing Page
+<img src="assets/product_desktop.png" alt="StellarFlow responsive desktop product landing page" width="800">
+
+### Product: Mobile Responsive Experience
+<img src="assets/product_mobile.png" alt="StellarFlow responsive mobile product experience" width="420">
+
 ### Mobile Responsive UI
 <img src="assets/mobile_ui.jpg" alt="Mobile Responsive UI" width="600">
 
 ### Wallet Options
 <img src="assets/wallet_options.jpg" alt="Wallet Options" width="600">
 
+### Live Multi-Wallet Selector
+The browser uses Stellar Wallets Kit to present supported wallet choices, including Albedo, Freighter, xBull, Fordefi, Rabet, Lobstr, Hana, and additional providers.
+<img src="assets/wallet_options_live.png" alt="Stellar Wallets Kit multi-wallet connection selector" width="600">
+
 ### CI/CD Pipeline
 <img src="assets/ci_cd.jpg" alt="CI/CD Pipeline" width="600">
+
+### GitHub Actions: Four Sequential Blocks Passed
+<img src="assets/ci_cd_success.png" alt="GitHub Actions CI/CD pipeline with Node, Rust, Go, and Python blocks passing sequentially" width="600">
 
 ### Test Output
 <img src="assets/test_output.jpg" alt="Test Output" width="600">
