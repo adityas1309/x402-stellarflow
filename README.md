@@ -5,7 +5,7 @@
 [![Demo video](https://img.shields.io/badge/demo%20video-YouTube-red?logo=youtube)](https://www.youtube.com/watch?v=UL958Dl2-2c)
 [![Testnet contract](https://img.shields.io/badge/testnet%20contract-Stellar%20Expert-1d69d5)](https://stellar.expert/explorer/testnet/contract/CBRE5KJZRMX6VOPPO6PZOVLMAKIFPB6SERENFHDHULRKG5NGVQ6ZTZ4F)
 [![Feedback form](https://img.shields.io/badge/feedback-Google%20Form-4285F4?logo=googleforms&logoColor=white)](https://docs.google.com/forms/d/e/1FAIpQLSf3oa5nUMMdyot-twwA4-YRqMzyQAzsp6RwEJTxC2kBiiJ42w/viewform?usp=dialog)
-[![Feedback responses](https://img.shields.io/badge/feedback%20responses-Google%20Sheets-34A853?logo=googlesheets&logoColor=white)](https://docs.google.com/spreadsheets/d/1QFqr163Q3oosbmugLMNBuGyhwNdJTOvF-zr_1y2vqQE)
+[![Feedback responses](https://img.shields.io/badge/feedback%20responses-Google%20Sheets-34A853?logo=googlesheets&logoColor=white)](https://docs.google.com/spreadsheets/d/14s57kXaNykzyhQazsA8a3jCMDwoZH3K55DVzhdPJDsg)
 
 StellarFlow is a pay-per-call API layer for AI agents. API owners add x402 middleware; agents discover price, receive HTTP 402, sign exact USDC authorization, retry, and receive data only after Stellar testnet settlement.
 
@@ -34,7 +34,7 @@ Testnet assets only. No production funds required.
 | CI | [.github/workflows/ci.yml](.github/workflows/ci.yml) |
 | Demo video | [YouTube](https://www.youtube.com/watch?v=UL958Dl2-2c) |
 | User feedback form | [Submit feedback](https://docs.google.com/forms/d/e/1FAIpQLSf3oa5nUMMdyot-twwA4-YRqMzyQAzsp6RwEJTxC2kBiiJ42w/viewform?usp=dialog) |
-| Feedback responses | [View responses](https://docs.google.com/spreadsheets/d/1QFqr163Q3oosbmugLMNBuGyhwNdJTOvF-zr_1y2vqQE) |
+| Feedback responses | [View responses](https://docs.google.com/spreadsheets/d/14s57kXaNykzyhQazsA8a3jCMDwoZH3K55DVzhdPJDsg) |
 
 ## Submission Screenshots
 
@@ -224,4 +224,4 @@ MIT. StellarFlow uses Stellar testnet assets and is not a production-money appli
 ## Feedback
 
 - [Submit feedback through Google Forms](https://docs.google.com/forms/d/e/1FAIpQLSf3oa5nUMMdyot-twwA4-YRqMzyQAzsp6RwEJTxC2kBiiJ42w/viewform?usp=dialog)
-- [Review feedback responses in Google Sheets](https://docs.google.com/spreadsheets/d/1QFqr163Q3oosbmugLMNBuGyhwNdJTOvF-zr_1y2vqQE)
+- [Review feedback responses in Google Sheets](https://docs.google.com/spreadsheets/d/14s57kXaNykzyhQazsA8a3jCMDwoZH3K55DVzhdPJDsg)
